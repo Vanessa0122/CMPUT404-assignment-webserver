@@ -28,21 +28,20 @@ import datetime
 
 # try: curl -v -X GET http://127.0.0.1:8080/s
 
-root = "www"
+
 class MyWebServer(socketserver.BaseRequestHandler):
 
     def handle(self):
         self.data = self.request.recv(1024).strip()
         print ("Got a request of: %s\n" % self.data)
-        self.request.sendall(bytearray("OK",'utf-8'))
+        #self.request.sendall(bytearray("OK",'utf-8'))
         http_method, http_version, host, path = self.parse_raw_request(self.data)
         if http_method != 'GET':
-            status_code = 405
-            response_protocol = http_version + " 405 Method Not Allowed"
-            self.build_response(status_code, response_protocol, Null, Null)
+            request_file_path = "None"
+            response = self.build_response(405, request_file_path, host)
+            self.request.sendall(response)
         else:
             self.http_request_handler(http_method, http_version, host, path)
-
 
     # https://github.com/python/cpython/blob/master/Lib/http/server.py#L269
     def parse_raw_request(self, raw_request):
@@ -51,10 +50,8 @@ class MyWebServer(socketserver.BaseRequestHandler):
         elements = request.split()
         if len(elements) == 0:
             raise ValueError("Invalid HTTP entry, please  try again")
-        #print(elements)
         http_method = elements[0]   #Get http_method
         path = elements[1]  #Get path
-        #Get http_version
         for i in elements:
             if i.startswith('HTTP/'):
                 http_version = i
@@ -64,47 +61,100 @@ class MyWebServer(socketserver.BaseRequestHandler):
         for i in range (0, len(elements)-1):
             if elements[i] == "Host:":
                 host = "http://" + elements[i+1] #host has to have "http://" in the beginning
-
         return http_method, http_version, host, path
 
 
     def http_request_handler(self, method, http_version, host, path):
-        request_path = root + path #www + /index.html
-        request_file_path = os.path.join(os.getcwd(), request_path)
-        #Get file extension
-        #Author https://stackoverflow.com/users/63485/brian-neal
-        #Post https://stackoverflow.com/questions/541390/extracting-extension-from-filename-in-python
-        request_file_extension = os.path.splitext(request_file_path)[1]
-
-        if self.file_exists(request_file_path):
-            with open(request_file_path, 'r') as request_file:
-                status_code = 200
-                response_protocol = http_version + " 200 OK"
-                response_headers = {
-                "Location": host,
-                "Content-Type": self.get_content_type(request_file_extension),
-                "Content-Length": self.get_content_length(request_file_path),
-                "Date": datetime.datetime.now()
-                }
-            self.build_response(status_code, response_protocol, response_headers, request_file_path)
+        #Path is anything after 127.0.0.1:8080
+        #Current directory /Users/mochi/Documents/CMPUT404-assignment-webserver
+        request_file_path = os.getcwd() + path
+        if path == '/': #8080/ or 8080 will both have a path of /
+            request_file_path = os.getcwd()+'/www'
+            response = self.build_response(200, request_file_path, host)
+            self.request.sendall(response)
+            return
+        elif os.path.isfile(request_file_path): #8080/deep/index.html or 8080/deep/deep.css are existing file
+            response = self.build_response(200, request_file_path, host)
+            self.request.sendall(response)
+            return
+        elif os.path.isdir(request_file_path): #8080/deep
+            if os.path.isfile(request_file_path+'/index.html'):   #if index.html exists in the directory, return 200
+                if request_file_path.endswith('/'):  #if index.html exists in the directory but the path looks like 8080/deep/
+                    response = self.build_response(301, request_file_path, host)
+                    self.request.sendall(response)
+                    return
+                else:
+                    response = self.build_response(200, request_file_path, host)
+                    self.request.sendall(response)
+                    return
         else:
-            status_code = 404
-            response_protocol = http_version + " 404 Not Found"
-            self.build_response(status_code, response_protocol, response_headers, Null)
+            print(request_file_path)
+            response = self.build_response(404, request_file_path, host)
+            self.request.sendall(response)
+            return
 
-    def build_response(self, status_code, response_protocol, response_headers, request_file_path):
-        response = response_protocol + "\n"
-        for key, value in response_headers.items():
-            #How to print it nicely
-            #Author https://stackoverflow.com/users/416500/foslock
-            #Post https://stackoverflow.com/questions/44689546/how-to-print-out-a-dictionary-nicely-in-python/44689627
-            response += "{}: {}\n".format(key, value)
-        if request_file_path:
-            response += "\n\n" + open(request_file_path, 'r').read()
-        print(response)
-        #Http response can't be a string. It needs to be encoded before it is sent
-        #https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages
-        return response.encode()
+    def build_response(self, status_code, path, host):
+        response = ""
+        if status_code == 200:
+            response += "HTTP/1.1 200 OK \n"
+            if path.endswith('/www'):
+                with open(path+"/index.html", 'r') as request_file:
+                    response_headers = {
+                    "Host": host,
+                    "Content-Type": self.get_content_type(os.path.splitext(path+"/index.html")[1]), #passing in the extension
+                    "Content-Length": self.get_content_length(path),
+                    "Date": datetime.datetime.now()
+                    }
+                    for key, value in response_headers.items():
+                        response += "{}: {}\n".format(key, value)
+                    response += request_file.read()
+                return response.encode()
+            elif os.path.isfile(path): #8080/www/deep/index.html or 8080/www/deep/deep.css are existing file
+                with open(path, 'r') as request_file:
+                    response_headers = {
+                    "Host": host,
+                    "Content-Type": self.get_content_type(os.path.splitext(path)[1]), #passing in the extension
+                    "Content-Length": self.get_content_length(path),
+                    "Date": datetime.datetime.now()
+                    }
+                    for key, value in response_headers.items():
+                        response += "{}: {}\n".format(key, value)
+                    response += request_file.read()
+                return response.encode()
+            elif os.path.isdir(path):
+                with open(path + '/index.html', 'r') as request_file:
+                    response_headers = {
+                    "Host": host,
+                    "Content-Type": self.get_content_type(os.path.splitext(path+'index.html')[1]), #passing in the extension
+                    "Content-Length": self.get_content_length(path),
+                    "Date": datetime.datetime.now()
+                    }
+                    for key, value in response_headers.items():
+                        response += "{}: {}\n".format(key, value)
+                    response += request_file.read()
+                return response.encode()
+
+        elif status_code == 301:  #Todo: prints with 8080/www/deep/index.html but not 8080/www/deep/
+            response += "HTTP/1.1 301 Permanently Moved \n" #Todo: curl: (18) transfer closed with 291 bytes remaining to read
+            path = path[:-1]
+            with open(path+"/index.html", 'r') as request_file:
+                response_headers = {
+                    "Location": host+' to be determined',  #Todo: get the new Location
+                    "Host": host,
+                    "Content-Type": self.get_content_type(os.path.splitext(path+"index.html")[1]), #passing in the extension
+                    "Content-Length": self.get_content_length(path),
+                    "Date": datetime.datetime.now()
+                }
+                for key, value in response_headers.items():
+                    response += "{}: {}\n".format(key, value)
+                response += request_file.read()
+            return response.encode()
+
+        elif status_code == 404:
+            return "HTTP/1.1 404 Not Found \n".encode()
+
+        elif status_code == 405:
+            return "HTTP/1.1 405 Method Not Allowed \n".encode()
 
     def get_content_type(self, extension):
         if extension == ".html":
@@ -113,11 +163,10 @@ class MyWebServer(socketserver.BaseRequestHandler):
             return "text/css"
 
     def get_content_length(self, path):
-        body = open(path, 'r').read()
-        return len(body)
+        return os.path.getsize(path)
 
 
-    def file_exists(self, file_path): #Todo: check file path traversal
+    def prevent_path_traversal(self): #Todo: check file path traversal
         return True
 
 
