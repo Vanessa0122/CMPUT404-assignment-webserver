@@ -72,7 +72,7 @@ class MyWebServer(socketserver.BaseRequestHandler):
         request_file_path = os.getcwd()
         if path == '/':
             request_file_path = os.getcwd() + '/www'
-        elif path.startswith('/www')!= True and path.endswith('/') != True and os.path.isdir(request_file_path+'/www'+path): #Todo: needs to be imrpoved
+        elif path.startswith('/www')!= True and path.endswith('/') != True and os.path.isdir(request_file_path+'/www'+path): #Todo: needs to be improved
             request_file_path = "Null"
             response = self.build_response(303, request_file_path, host)
             self.request.sendall(response)
@@ -103,13 +103,14 @@ class MyWebServer(socketserver.BaseRequestHandler):
             if path.endswith('/'):
                 with open(path+"index.html", 'r') as request_file:
                     response_headers = {
-                    "Host": host,
-                    "Content-Type": self.get_content_type(os.path.splitext(path+"/index.html")[1]), #passing in the extension
-                    #"Content-Length": self.get_content_length(path),
-                    "Date": datetime.datetime.now()
+                        "Host": host,
+                        "Content-Type": self.get_content_type(os.path.splitext(path+"/index.html")[1]), #passing in the extension
+                        #"Content-Length": self.get_content_length(path),
+                        "Date": datetime.datetime.now()
                     }
                     for key, value in response_headers.items():
                         response += "{}: {}\n".format(key, value)
+                    response += '\n'
                     response += request_file.read()
 
             elif os.path.isfile(path + 'www/index.html'):
@@ -122,6 +123,7 @@ class MyWebServer(socketserver.BaseRequestHandler):
                     }
                     for key, value in response_headers.items():
                         response += "{}: {}\n".format(key, value)
+                    response += '\n'
                     response += request_file.read()
 
             elif os.path.isfile(path): #8080/www/deep/index.html or 8080/www/deep/deep.css are existing file
@@ -134,6 +136,7 @@ class MyWebServer(socketserver.BaseRequestHandler):
                     }
                     for key, value in response_headers.items():
                         response += "{}: {}\n".format(key, value)
+                    response += '\n'
                     response += request_file.read()
 
             elif os.path.isdir(path):
@@ -146,6 +149,7 @@ class MyWebServer(socketserver.BaseRequestHandler):
                     }
                     for key, value in response_headers.items():
                         response += "{}: {}\n".format(key, value)
+                    response += '\n'
                     response += request_file.read()
 
 
@@ -168,13 +172,20 @@ class MyWebServer(socketserver.BaseRequestHandler):
             response += "HTTP/1.1 303 See Other\n"
 
         elif status_code == 404:
-            response = "HTTP/1.1 404 Not FOUND!\n"
-
+            response = "HTTP/1.1 404 Not FOUND!\n\n"
+            response +=  '''<!DOCTYPE html>
+                <html>
+                    <body>404 Not Found</body>
+                </html>
+            '''
         elif status_code == 405:
-            response = "HTTP/1.1 405 Method Not Allowed \n"
-        
+            response = "HTTP/1.1 405 Method Not Allowed\n\n"
+            response +=  '''<!DOCTYPE html>
+                <html>
+                    <body>404 Not Found</body>
+                </html>
+            '''
         return response.encode()
-
     def get_content_type(self, extension):
         if extension == ".html":
             return "text/html"
