@@ -36,7 +36,6 @@ class TestYourWebserver(unittest.TestCase):
         req = request.urlopen(url, None, 3)
         self.assertTrue( req.getcode()  == 200 , "200 OK Not FOUND!")
 
-
     def test_get_index(self):
         url = self.baseurl + "/index.html"
         req = request.urlopen(url, None, 3)
@@ -61,7 +60,7 @@ class TestYourWebserver(unittest.TestCase):
         except request.HTTPError as e:
             self.assertTrue( e.getcode()  == 404 , ("404 Not FOUND! %d" % e.getcode()))
         else:
-            self.assertTrue( false, "Another Error was thrown!")
+            self.assertTrue(False, "Another Error was thrown!")
 
     def test_css(self):
         url = self.baseurl + "/base.css"
