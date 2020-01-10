@@ -55,9 +55,9 @@ class MyWebServer(socketserver.BaseRequestHandler):
             return 
         
         #Handle 200, 301 here 
-
+        
         request_path = os.getcwd() + '/www' + path    #not supposed to serve http:/127.0.0.1:8080/   http:/127.0.0.1:8080/deep/
-        if os.path.isfile(request_path) :
+        if os.path.isfile(request_path) and self.is_safe_path(os.getcwd()+'/www', request_path):
             file_ext = os.path.splitext(request_path)[1]
             print(file_ext)
             if file_ext in ['.css', '.html']:
@@ -68,7 +68,7 @@ class MyWebServer(socketserver.BaseRequestHandler):
                     "Content-Type": self.get_content_type(file_ext)
                 }
                 response = self.build_response(header, protocol, content)
-        elif os.path.isdir(request_path):
+        elif os.path.isdir(request_path) and self.is_safe_path(os.getcwd()+'/www', request_path):
             if os.path.isfile(request_path+'/index.html'): #if index.html exists in the directory
                 if path == '/':
                     protocol = "HTTP/1.1 200 Method OK"
@@ -148,6 +148,11 @@ class MyWebServer(socketserver.BaseRequestHandler):
             return "text/css"
 
     #TODO: path traversal 
+
+    def is_safe_path(self, basedir, path, follow_symlinks=True):
+    # resolves symbolic links
+        if follow_symlinks:
+            return os.path.realpath(path).startswith(basedir)
 
 
 
