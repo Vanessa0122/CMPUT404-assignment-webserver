@@ -2,6 +2,9 @@
 import socketserver
 import requests
 import os
+from urllib import request
+
+
 # Copyright 2013 Abram Hindle, Eddie Antonio Santos, Vanessa Peng
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -53,7 +56,7 @@ class MyWebServer(socketserver.BaseRequestHandler):
         
         #Handle 200, 301 here 
 
-        request_path = os.getcwd() + '/www' + path    #not supposed to serve http:/127.0.0.1:8080/www/     http:/127.0.0.1:8080/www/deep/
+        request_path = os.getcwd() + '/www' + path    #not supposed to serve http:/127.0.0.1:8080/   http:/127.0.0.1:8080/deep/
         if os.path.isfile(request_path) :
             file_ext = os.path.splitext(request_path)[1]
             print(file_ext)
@@ -76,14 +79,6 @@ class MyWebServer(socketserver.BaseRequestHandler):
                     }
                     response = self.build_response(header, protocol, content)    
                 elif path.endswith('/'):
-                    protocol = "HTTP/1.1 301 Moved Permanently"
-                    content = open(request_path[:-1]+'/index.html').read() #Should I display content for 301 ? 
-                    header={
-                        "Host": host,
-                        "Location": host+path[:-1],
-                    }
-                    response = self.build_response(header, protocol, "")        
-                else:
                     protocol = "HTTP/1.1 200 Method OK"
                     content = open(request_path+'/index.html').read()
                     header={
@@ -91,6 +86,14 @@ class MyWebServer(socketserver.BaseRequestHandler):
                         "Content-Type": "text/html"
                     }
                     response = self.build_response(header, protocol, content)
+                else:
+                    protocol = "HTTP/1.1 301 Moved Permanently"
+                    header={
+                        "Host": host,
+                        "Redirected to": host+path+'/',
+                    }
+                    response = self.build_response(header, protocol, None)    
+                    
         #Left overs are 404 
         else:
             protocol = "HTTP/1.1 404 Not Found"
@@ -101,8 +104,9 @@ class MyWebServer(socketserver.BaseRequestHandler):
             '''
             header = {"Content-Type": "text/html"}
             response = self.build_response(header, protocol, content)
-
+        
         self.request.sendall(response)
+        return
 
 
     # https://github.com/python/cpython/blob/master/Lib/http/server.py#L269
@@ -131,7 +135,8 @@ class MyWebServer(socketserver.BaseRequestHandler):
         
         #Need to do this otherwise the browser is not going to read the html content!
         complete_message += "\n\n"
-        complete_message += content
+        if content != None:
+            complete_message += content
 
         return complete_message.encode()
 
