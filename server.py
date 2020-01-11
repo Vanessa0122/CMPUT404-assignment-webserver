@@ -1,6 +1,6 @@
 #  coding: utf-8
 import socketserver
-import requests
+# import requests
 import os
 from urllib import request
 
@@ -39,8 +39,6 @@ class MyWebServer(socketserver.BaseRequestHandler):
         #self.request.sendall(bytearray("OK",'utf-8'))
 
         http_method, http_version, host, path = self.parse_raw_request(self.data)
-        print(http_method, http_version, host+path)
-
         #Handle 405 Method Not Allowed first 
         if http_method != 'GET':
             protocol = "HTTP/1.1 405 Method Not Allowed"  
@@ -55,11 +53,9 @@ class MyWebServer(socketserver.BaseRequestHandler):
             return 
         
         #Handle 200, 301 here 
-        
-        request_path = os.getcwd() + '/www' + path    #not supposed to serve http:/127.0.0.1:8080/   http:/127.0.0.1:8080/deep/
+        request_path = os.getcwd() + '/www' + path    
         if os.path.isfile(request_path) and self.is_safe_path(os.getcwd()+'/www', request_path):
             file_ext = os.path.splitext(request_path)[1]
-            print(file_ext)
             if file_ext in ['.css', '.html']:
                 protocol = "HTTP/1.1 200 Method OK"
                 content = open(request_path).read()
@@ -104,9 +100,8 @@ class MyWebServer(socketserver.BaseRequestHandler):
             '''
             header = {"Content-Type": "text/html"}
             response = self.build_response(header, protocol, content)
-        
         self.request.sendall(response)
-        return
+        # return
 
 
     # https://github.com/python/cpython/blob/master/Lib/http/server.py#L269
@@ -132,11 +127,11 @@ class MyWebServer(socketserver.BaseRequestHandler):
         complete_message = protocol + '\n'
         for key, value in header.items():
             complete_message += "{}: {}\n".format(key, value) 
-        
         #Need to do this otherwise the browser is not going to read the html content!
         complete_message += "\n\n"
         if content != None:
             complete_message += content
+        
 
         return complete_message.encode()
 
