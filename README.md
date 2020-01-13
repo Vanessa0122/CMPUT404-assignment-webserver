@@ -23,9 +23,13 @@ Reference
 ========================
 
 https://medium.com/from-the-scratch/http-server-what-do-you-need-to-know-to-build-a-simple-http-server-from-scratch-d1ef8945e4fa
+
 https://docs.python.org/2/library/socketserver.html
+
 https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages
+
 https://portswigger.net/web-security/file-path-traversal
+
 https://security.openstack.org/guidelines/dg_using-file-paths.html
 
 Study Buddy 
