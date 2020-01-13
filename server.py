@@ -86,7 +86,7 @@ class MyWebServer(socketserver.BaseRequestHandler):
                     protocol = "HTTP/1.1 301 Moved Permanently"
                     header={
                         "Host": host,
-                        "Redirected to": host+path+'/',
+                        "Location": host+path+'/',
                     }
                     response = self.build_response(header, protocol, None)    
                     

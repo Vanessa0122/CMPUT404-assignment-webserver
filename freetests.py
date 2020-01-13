@@ -17,11 +17,10 @@
 
 from urllib import request
 import unittest
-import time
 
 BASEURL = "http://127.0.0.1:8080"
 
-class TestYourWebserver(unittest.TestCase):        
+class TestYourWebserver(unittest.TestCase):
     def setUp(self,baseurl=BASEURL):
         """do nothing"""
         self.baseurl = baseurl
