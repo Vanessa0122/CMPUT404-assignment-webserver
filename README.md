@@ -31,7 +31,7 @@ https://security.openstack.org/guidelines/dg_using-file-paths.html
 Study Buddy 
 =======================
 
-Joe Xue (Discuss how to prevent path traversal attack on January 10th, Friday)
+Joe Xue (Discussed how to prevent path traversal attack on January 10th, Friday)
 
 
 But the server.py example is derived from the python documentation
