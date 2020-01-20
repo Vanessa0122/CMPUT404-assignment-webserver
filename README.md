@@ -18,9 +18,12 @@ server.py contains contributions from:
 * Eddie Antonio Santos
 * Jackson Z Chang
 * Mandy Meindersma 
+* Vanessa Peng
 
 Reference 
 ========================
+
+https://tools.ietf.org/html/rfc7230#section-3.3.1
 
 https://medium.com/from-the-scratch/http-server-what-do-you-need-to-know-to-build-a-simple-http-server-from-scratch-d1ef8945e4fa
 
