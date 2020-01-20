@@ -47,7 +47,9 @@ class MyWebServer(socketserver.BaseRequestHandler):
                     <body>405 Not Found</body>
                 </html>
             '''
-            header = {"Content-Type": "text/html"}            
+            header = {
+                "Content-Type": "text/html",
+                "Content-Length": len(content)}            
             response = self.build_response(header, protocol, content)
             self.request.sendall(response)
             return 
@@ -61,7 +63,8 @@ class MyWebServer(socketserver.BaseRequestHandler):
                 content = open(request_path).read()
                 header={
                     "Host": host,
-                    "Content-Type": self.get_content_type(file_ext)
+                    "Content-Type": self.get_content_type(file_ext),
+                    "Content-Length": len(content)
                 }
                 response = self.build_response(header, protocol, content)
         elif os.path.isdir(request_path) and self.is_safe_path(os.getcwd()+'/www', request_path):
@@ -71,7 +74,8 @@ class MyWebServer(socketserver.BaseRequestHandler):
                     content = open(request_path+'/index.html').read()
                     header={
                         "Host": host,
-                        "Content-Type": "text/html"
+                        "Content-Type": "text/html",
+                        "Content-Length": len(content)
                     }
                     response = self.build_response(header, protocol, content)    
                 elif path.endswith('/'):
@@ -79,7 +83,8 @@ class MyWebServer(socketserver.BaseRequestHandler):
                     content = open(request_path+'/index.html').read()
                     header={
                         "Host": host,
-                        "Content-Type": "text/html"
+                        "Content-Type": "text/html",
+                        "Content-Length": len(content)
                     }
                     response = self.build_response(header, protocol, content)
                 else:
@@ -98,7 +103,9 @@ class MyWebServer(socketserver.BaseRequestHandler):
                     <body>404 Not Found</body>
                 </html>
             '''
-            header = {"Content-Type": "text/html"}
+            header = {
+                "Content-Type": "text/html",
+                "Content-Length": len(content)}
             response = self.build_response(header, protocol, content)
         self.request.sendall(response)
         # return
