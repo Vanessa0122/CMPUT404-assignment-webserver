@@ -28,22 +28,43 @@ compatible) http://docs.python.org/2/library/socketserver.html
 Reference 
 ========================
 
-Internet Engineering Task Force (IETF)    https://tools.ietf.org/html/rfc7230#section-3.3.1
+Internet Engineering Task Force (IETF)  
+
+Hypertext Transfer Protocol (HTTP/1.1): Message Syntax and Routing   
+
+https://tools.ietf.org/html/rfc7230
 
 Medium 
+
 Author https://medium.com/@skreweverything
 
 "HTTP Server: Everything you need to know to Build a simple HTTP server from scratch" 
 
 https://medium.com/from-the-scratch/http-server-what-do-you-need-to-know-to-build-a-simple-http-server-from-scratch-d1ef8945e4fa
 
-Python Document  https://docs.python.org/2/library/socketserver.html
+Python Document 
 
-Mozilla MDN Web Docs https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages
+20.17. SocketServer — A framework for network servers¶
 
-PortSwigger Ltd web security https://portswigger.net/web-security/file-path-traversal
+https://docs.python.org/2/library/socketserver.html
 
-OpenStack https://security.openstack.org/guidelines/dg_using-file-paths.html
+Mozilla MDN Web Docs
+
+HTTP Messages
+
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages
+
+PortSwigger Ltd web security
+
+Directory traversal
+
+https://portswigger.net/web-security/file-path-traversal
+
+OpenStack 
+
+Restrict path access to prevent path traversal
+
+https://security.openstack.org/guidelines/dg_using-file-paths.html
 
 Study Buddy 
 =======================
