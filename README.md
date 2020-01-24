@@ -44,7 +44,7 @@ https://medium.com/from-the-scratch/http-server-what-do-you-need-to-know-to-buil
 
 Python Document 
 
-20.17. SocketServer — A framework for network servers¶
+20.17. SocketServer — A framework for network servers
 
 https://docs.python.org/2/library/socketserver.html
 
