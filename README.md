@@ -23,17 +23,20 @@ server.py contains contributions from:
 Reference 
 ========================
 
-https://tools.ietf.org/html/rfc7230#section-3.3.1
+Internet Engineering Task Force (IETF)    https://tools.ietf.org/html/rfc7230#section-3.3.1
 
+Medium 
+Author https://medium.com/@skreweverything
+"HTTP Server: Everything you need to know to Build a simple HTTP server from scratch"
 https://medium.com/from-the-scratch/http-server-what-do-you-need-to-know-to-build-a-simple-http-server-from-scratch-d1ef8945e4fa
 
-https://docs.python.org/2/library/socketserver.html
+Python Document  https://docs.python.org/2/library/socketserver.html
 
-https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages
+Mozilla MDN Web Docs https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages
 
-https://portswigger.net/web-security/file-path-traversal
+PortSwigger Ltd web security https://portswigger.net/web-security/file-path-traversal
 
-https://security.openstack.org/guidelines/dg_using-file-paths.html
+OpenStack https://security.openstack.org/guidelines/dg_using-file-paths.html
 
 Study Buddy 
 =======================
