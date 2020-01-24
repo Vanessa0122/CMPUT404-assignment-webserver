@@ -32,7 +32,8 @@ Internet Engineering Task Force (IETF)    https://tools.ietf.org/html/rfc7230#se
 
 Medium 
 Author https://medium.com/@skreweverything
-"HTTP Server: Everything you need to know to Build a simple HTTP server from scratch"
+"HTTP Server: Everything you need to know to Build a simple HTTP server from scratch" 
+
 https://medium.com/from-the-scratch/http-server-what-do-you-need-to-know-to-build-a-simple-http-server-from-scratch-d1ef8945e4fa
 
 Python Document  https://docs.python.org/2/library/socketserver.html
@@ -46,7 +47,7 @@ OpenStack https://security.openstack.org/guidelines/dg_using-file-paths.html
 Study Buddy 
 =======================
 
-Joe Xu (Discussed how to prevent path traversal attack on January 10th, Friday)
+Joe Xu (Discussed path traversal attack prevention on January 10th, Friday)
 
 
 
